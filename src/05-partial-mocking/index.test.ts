@@ -1,15 +1,19 @@
 import { mockOne, mockTwo, mockThree, unmockedFunction } from './index';
 
 jest.mock('./index', () => {
-   const originalModule = jest.requireActual<typeof import('./index')>('./index');
-   const mocked = Object.keys(originalModule).reduce((pre: {[key: string]: unknown}, methodName) => {
-     pre[methodName] = jest.fn();
-     return pre;
-   }, {});
-   return {
-     ...mocked,
-     unmockedFunction: originalModule.unmockedFunction
-   };
+  const originalModule =
+    jest.requireActual<typeof import('./index')>('./index');
+  const mocked = Object.keys(originalModule).reduce(
+    (pre: { [key: string]: unknown }, methodName) => {
+      pre[methodName] = jest.fn();
+      return pre;
+    },
+    {},
+  );
+  return {
+    ...mocked,
+    unmockedFunction: originalModule.unmockedFunction,
+  };
 });
 
 describe('partial mocking', () => {

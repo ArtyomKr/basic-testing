@@ -3,7 +3,7 @@ import { throttledGetDataFromApi } from './index';
 
 jest.mock('axios');
 jest.mock('lodash', () => ({
-  throttle: (fn: Function) => fn,
+  throttle: <T>(fn: T) => fn,
 }));
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -12,10 +12,10 @@ describe('throttledGetDataFromApi', () => {
   const dummyData = 'dummyData';
 
   beforeEach(() => {
-    mockedAxios.get.mockResolvedValue({ data: dummyData});
+    mockedAxios.get.mockResolvedValue({ data: dummyData });
 
     mockedAxios.create.mockReturnValue({
-      get: mockedAxios.get
+      get: mockedAxios.get,
     } as unknown as AxiosInstance);
   });
 
@@ -28,11 +28,13 @@ describe('throttledGetDataFromApi', () => {
     const baseURL = 'https://jsonplaceholder.typicode.com';
 
     await throttledGetDataFromApi('');
-    expect(mockedAxios.create).toHaveBeenCalledWith(expect.objectContaining({ baseURL }));
+    expect(mockedAxios.create).toHaveBeenCalledWith(
+      expect.objectContaining({ baseURL }),
+    );
   });
 
   test('should perform request to correct provided url', async () => {
-    const testUrl = '/test'
+    const testUrl = '/test';
     await throttledGetDataFromApi(testUrl);
     expect(mockedAxios.get).toHaveBeenCalledWith(testUrl);
   });
